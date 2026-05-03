@@ -138,33 +138,15 @@ require github.com/sparkwing-dev/sparkwing-sdk %s
 `, moduleName, goDirective, sdkRequirementVersion())
 }
 
-// sdkRequirementVersion picks the sparkwing module version to pin
-// in a freshly-generated go.mod. Prefers the running CLI's own
-// version when it parses as a clean semver tag; otherwise falls
-// back to the fallbackSDKVersion constant. `go mod tidy` resolves
-// to actual latest at first compile if Go is on PATH, so a
+// sdkRequirementVersion picks the sparkwing-sdk version to pin in a
+// freshly-generated go.mod. SDK-014 decoupled the CLI version from
+// the SDK version (separate modules, separate release trains), so
+// we always use fallbackSDKVersion. Bump fallbackSDKVersion when a
+// new sparkwing-sdk release ships. `go mod tidy` resolves to
+// actually-latest at first compile if Go is on PATH, so a
 // slightly-stale fallback isn't load-bearing.
-//
-// Strips pseudo-version suffixes ("+dirty", "-rc1", anything after
-// the vX.Y.Z): a tag like "v0.41.0+dirty" from runtime/debug isn't
-// a valid go.mod require version. We round down to vX.Y.Z so the
-// generated file is always parseable by `go mod tidy`.
 func sdkRequirementVersion() string {
-	v := installedVersion()
-	if !strings.HasPrefix(v, "v") || strings.Contains(v, "(") {
-		return fallbackSDKVersion
-	}
-	// Trim at the first "+" or "-" after the version number.
-	clean := v
-	if idx := strings.IndexAny(clean, "+-"); idx >= 0 {
-		clean = clean[:idx]
-	}
-	// Sanity: must look like vX.Y.Z (three dot-separated parts).
-	parts := strings.Split(strings.TrimPrefix(clean, "v"), ".")
-	if len(parts) != 3 {
-		return fallbackSDKVersion
-	}
-	return clean
+	return fallbackSDKVersion
 }
 
 func renderInitMainGo(moduleName string) string {
