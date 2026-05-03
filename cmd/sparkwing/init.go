@@ -25,7 +25,7 @@ import (
 // sparkwing.dev rather than `go install`'d). Bump on each release.
 // `go mod tidy` will resolve this to the actual latest if Go is on
 // PATH, so the constant is a fail-safe, not the source of truth.
-const fallbackSDKVersion = "v0.41.9"
+const fallbackSDKVersion = "v0.0.1"
 
 // bootstrapDotSparkwing creates the .sparkwing/ skeleton (go.mod,
 // main.go, pipelines.yaml) and prints the section header + file
